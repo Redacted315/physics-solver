@@ -1,0 +1,52 @@
+KINEMATICS
+
+v = ∆d / ∆t
+
+a = ∆v / ∆t
+
+d = vi * t + 0.5 * a * t^2
+
+d = vf * t - 0.5 * a * t^2
+
+d = ( (vf + vi ) / 2) * t
+
+vf^2 = vi^2 + 2 * a * d
+
+
+
+MOMENTUM AND ENERGY
+
+p = m * v
+
+F * ∆t = m * ∆v
+
+Ek = 0.5 * m * v^2
+
+Ep = m * g * h
+
+Ep = 0.5 * k * x^2
+
+
+
+TRIGONOMETRY AND GEOMETRY
+
+sinθ = opposite / hypotenuse
+
+cosθ = adjacent / hypotenuse
+
+tanθ = opposite / adjacent
+
+c^2 = a^2 + b^2
+
+slope = ∆y / ∆x
+
+y = m * x + b
+
+area_of_rectangle = l * w
+
+area_of_triangle = 0.5 * base * height
+
+area_of_circle = π * r^2
+
+circumference = 2 * π * r
+
