@@ -1,1 +1,1 @@
-small command line program which tells you what variables you can solve for with the variables you currently have
+small program which tells you what variables you can solve for (and how to) with the variables you currently have
