@@ -20,34 +20,21 @@ class physics:
         for variable in self.variableDict:
             if variable in list(known.keys()):
                 self.variableDict[variable] = known[variable]
-        print("given",self.known)
         self.variableDict = self.variableDict
     
     def available(self):
         for key in self.requirementDict:
             if self.variableDict[key] is None:
-                print("testing for",key)
-                print(key,"has",len(self.requirementDict[key]),"requirements")
                 reqs = len(self.requirementDict[key])
                 reqs_met = 0
                 for i in self.requirementDict[key]:
                     if self.variableDict[i] is None:
-                        print("missing requirement",i)
+                        pass
                     else:
-                        # print("requirement",i,"satisfied")
                         reqs_met += 1
                         if reqs_met == reqs:
-                            print("all requirements met")
                             self.possible.append(key)
-        print(self.possible)
-
-def main():
-    lightningMcqueen = physics()
-    lightningMcqueen.given(velocity=5,momentum=35)
-    lightningMcqueen.available()
-
-if __name__ == "__main__":
-    main()
+        return self.possible
 
 """
 requirements:

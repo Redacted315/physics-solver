@@ -1,53 +1,122 @@
 import tkinter as tk
+from tkinter import messagebox
+from time import sleep
+from main import physics
 
 master = tk.Tk()
+comp = physics()
 
+master.resizable("false", "false")
 
 label_column = tk.Frame(master)
 entry_column = tk.Frame(master)
+button_frame = tk.Frame(master)
 
-vl = tk.Label(label_column,text="Velocity:")
-ml = tk.Label(label_column,text="Mass:")
-al = tk.Label(label_column,text="Acceleration:")
-dl = tk.Label(label_column,text="Distance:")
-tl = tk.Label(label_column,text="Time:")
-momentuml = tk.Label(label_column,text="Momentum:")
-vl.pack(side=tk.TOP,anchor=tk.NW)
-ml.pack(side=tk.TOP,anchor=tk.NW)
-al.pack(side=tk.TOP,anchor=tk.NW,pady=2)
-dl.pack(side=tk.TOP,anchor=tk.NW)
-tl.pack(side=tk.TOP,anchor=tk.NW)
-momentuml.pack(side=tk.TOP,anchor=tk.NW,pady=2)
+velocity_label = tk.Label(label_column,text="Velocity:")
+mass_label = tk.Label(label_column,text="Mass:")
+acceleration_label = tk.Label(label_column,text="Acceleration:")
+distance_label = tk.Label(label_column,text="Distance:")
+time_label = tk.Label(label_column,text="Time:")
+momentum_label = tk.Label(label_column,text="Momentum:")
 
+velocity_label.pack(side=tk.TOP,anchor=tk.NW)
+mass_label.pack(side=tk.TOP,anchor=tk.NW)
+acceleration_label.pack(side=tk.TOP,anchor=tk.NW,pady=2)
+distance_label.pack(side=tk.TOP,anchor=tk.NW)
+time_label.pack(side=tk.TOP,anchor=tk.NW)
+momentum_label.pack(side=tk.TOP,anchor=tk.NW,pady=2)
 
-ve = tk.Entry(entry_column, width=8)
-ml = tk.Entry(entry_column, width=8)
-al = tk.Entry(entry_column, width=8)
-dl = tk.Entry(entry_column, width=8)
-tl = tk.Entry(entry_column, width=8)
-momentuml = tk.Entry(entry_column, width=8)
-entry_list = [ve,ml,al,dl,tl,momentuml]
-ve.pack(side=tk.TOP,anchor=tk.NW,pady=2)
-ml.pack(side=tk.TOP,anchor=tk.NW,pady=2)
-al.pack(side=tk.TOP,anchor=tk.NW,pady=2)
-dl.pack(side=tk.TOP,anchor=tk.NW,pady=2)
-tl.pack(side=tk.TOP,anchor=tk.NW,pady=2)
-momentuml.pack(side=tk.TOP,anchor=tk.NW,pady=2)
+velocity_entry = tk.Entry(entry_column, width=8, name='velocity')
+mass_entry = tk.Entry(entry_column, width=8, name='mass')
+acceleration_entry = tk.Entry(entry_column, width=8, name='acceleration')
+distance_entry = tk.Entry(entry_column, width=8, name='distance')
+time_entry = tk.Entry(entry_column, width=8, name='time')
+momentum_entry = tk.Entry(entry_column, width=8, name='momentum')
 
+velocity_entry.pack(side=tk.TOP,anchor=tk.NW,pady=2)
+mass_entry.pack(side=tk.TOP,anchor=tk.NW,pady=2)
+acceleration_entry.pack(side=tk.TOP,anchor=tk.NW,pady=2)
+distance_entry.pack(side=tk.TOP,anchor=tk.NW,pady=2)
+time_entry.pack(side=tk.TOP,anchor=tk.NW,pady=2)
+momentum_entry.pack(side=tk.TOP,anchor=tk.NW,pady=2)
 
-def button_go():
+entry_list = [velocity_entry,mass_entry,acceleration_entry,distance_entry,time_entry,momentum_entry]
+
+original_background_colour = velocity_entry.cget("background")
+
+def warning_background(): # flashes entry background colour
     for i in entry_list:
-        print(i)# print(i.get())
+        i.configure(state='disabled',disabledbackground='#ebd36c') # yellow
+    master.update_idletasks()
+    sleep(0.2)
+    for i in entry_list:
+        i.configure(state='disabled',disabledbackground='#bf6e60') # red
+    master.update_idletasks()
+    sleep(0.2)
 
-go_button = tk.Button(master,text="GO",command=button_go)
+def blink_warning():
+    import winsound
+    # Play Windows exit sound.
+    winsound.PlaySound('SystemHand', winsound.SND_ASYNC)
+    # .SND_ASYNC returns immediately, without this none of the following code will execute untill
+    # the sound has finished playing in its entirety
+    for i in range(3):
+        warning_background()
 
-go_button.pack(side=tk.BOTTOM)
+def reset_entrys():
+    for i in entry_list:
+        i.configure(background=original_background_colour, state='normal')
+        i.delete(0,tk.END)
+        master.focus() # remove cursor focus from entrys
 
+def is_valid(input):
+    try:
+        float(input)
+        return True
+    except:
+        return False
 
+def submit_variables(): # rename this
+    values_list = []
+    for i in entry_list:
+        value = i.get()
+        if value == '':
+            value = None
+            values_list.append(value)
+            i.configure(background="pink")
+        elif is_valid(value):
+            value = float(value)
+            values_list.append(value)
+            i.configure(state=tk.DISABLED,disabledbackground='light green')
+        else:
+            messagebox.showerror(title='oopsie!', message=value)
+    print(values_list)
+    try:
+        comp.given(velocity=values_list[0],mass=values_list[1],acceleration=values_list[2],distance=values_list[3],time=values_list[4],momentum=values_list[5])
+    except: # this is best practice
+        blink_warning()
+
+def fetch_results():
+    available_list = comp.available()
+    for available in available_list: # peak preformance
+        if available == 'mass': entry_list[1].configure(background='light blue')
+        elif available == 'velocity': entry_list[0].configure(background='light blue')
+        elif available == 'acceleration': entry_list[2].configure(background='light blue')
+        elif available == 'distance': entry_list[3].configure(background='light blue')
+        elif available == 'time': entry_list[4].configure(background='light blue')
+        elif available == 'momentum': entry_list[5].configure(background='light blue')
+
+go_button = tk.Button(button_frame,text="GO",command=submit_variables)
+no_button = tk.Button(button_frame,text="NO",command=reset_entrys)
+go_button.pack(side=tk.RIGHT,anchor='ne',fill=tk.X, expand=tk.YES)
+no_button.pack(side=tk.LEFT,anchor='nw',fill=tk.X, expand=tk.YES)
+
+button_frame.pack(side=tk.BOTTOM,fill=tk.X, expand=tk.YES)
 label_column.pack(side=tk.LEFT)
 entry_column.pack(side=tk.RIGHT)
 
-
-master.resizable("false", "false")
+master.bind('<Return>',lambda event:submit_variables())
+master.bind('<F5>',lambda event:reset_entrys())
+# master.bind('<BackSpace>',lambda event:fetch_results()) # testing/debuging
 
 master.mainloop()
