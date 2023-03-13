@@ -1,69 +1,153 @@
+import tkinter as tk
+from time import sleep
+from tkinter import messagebox
 
-"""
-To Do:
-    create another requirement dict for variables with multiple 'recipes'
-    ex.
-        [in class Physics: __init__]
-        self.alternativeRequirementDict = {...}
-"""
+from main import Physics
+
+master = tk.Tk()
+comp = Physics()
+
+# master.resizable("false", "false")
+master.resizable(False, False)
+
+label_column = tk.Frame(master)
+entry_column = tk.Frame(master)
+button_frame = tk.Frame(master)
+
+velocity_label = tk.Label(label_column, text="Velocity:")
+mass_label = tk.Label(label_column, text="Mass:")
+acceleration_label = tk.Label(label_column, text="Acceleration:")
+distance_label = tk.Label(label_column, text="Distance:")
+time_label = tk.Label(label_column, text="Time:")
+momentum_label = tk.Label(label_column, text="Momentum:")
+initial_velocity = tk.Label(label_column, text="Init. Velocity:")
+
+velocity_label.pack(side=tk.TOP, anchor=tk.NW)
+mass_label.pack(side=tk.TOP, anchor=tk.NW)
+acceleration_label.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+distance_label.pack(side=tk.TOP, anchor=tk.NW)
+time_label.pack(side=tk.TOP, anchor=tk.NW)
+momentum_label.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+initial_velocity.pack(side=tk.TOP, anchor=tk.NW)
+
+velocity_entry = tk.Entry(entry_column, width=8, name='velocity')
+mass_entry = tk.Entry(entry_column, width=8, name='mass')
+acceleration_entry = tk.Entry(entry_column, width=8, name='acceleration')
+distance_entry = tk.Entry(entry_column, width=8, name='distance')
+time_entry = tk.Entry(entry_column, width=8, name='time')
+momentum_entry = tk.Entry(entry_column, width=8, name='momentum')
+initial_velocity_entry = tk.Entry(entry_column, width=8, name='initial_velocity')
+
+velocity_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+mass_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+acceleration_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+distance_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+time_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+momentum_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+initial_velocity_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+
+entry_list = [velocity_entry, mass_entry, acceleration_entry, distance_entry, time_entry, momentum_entry,
+              initial_velocity_entry]
+
+original_background_colour = velocity_entry.cget("background")
 
 
-class Physics:
-    def __init__(self):
-        self.known = None
-        self.variableDict = {"velocity": None, "change_velocity": None, "initial_velocity": None,
-                             "final_velocity": None, "acceleration": None, "change_acceleration": None,
-                             "time": None, "change_time": None, "distance": None, "change_distance": None,
-                             "momentum": None, "change_momentum": None,
-                             "mass": None, "potential_energy": None, "kinetic_energy": None, "height": None,
-                             "net_force": None, "applied_force": None, "impulse": None}
-        self.requirementDict = {"mass": ['momentum', 'velocity'], "momentum": ['mass', 'velocity'],
-                                "velocity": ['change_distance', 'change_time'],
-                                "acceleration": ['change_velocity', 'change_time'],
-                                "distance": ['initial_velocity', 'time', 'acceleration']}
-        self.possible = []
-
-    def given(self, **known):
-        self.known = known
-        for variable in self.variableDict:
-            if variable in list(known.keys()):
-                self.variableDict[variable] = known[variable]
-        self.variableDict = self.variableDict
-
-    def available(self):
-        for key in self.requirementDict:
-            if self.variableDict[key] is None:
-                reqs = len(self.requirementDict[key])
-                reqs_met = 0
-                for i in self.requirementDict[key]:
-                    if self.variableDict[i] is None:
-                        pass
-                    else:
-                        reqs_met += 1
-                        if reqs_met == reqs:
-                            self.possible.append(key)
-        return self.possible
+def warning_background():  # flashes entry background colour
+    for i in entry_list:
+        i.configure(state='disabled', disabledbackground='#ebd36c')  # yellow
+    master.update_idletasks()
+    sleep(0.2)
+    for i in entry_list:
+        i.configure(state='disabled', disabledbackground='#bf6e60')  # red
+    master.update_idletasks()
+    sleep(0.2)
 
 
-"""
-requirements:
--m(p,v)
-m(Ep,h)#equations line 25
--p(m,v)
--v(∆d,∆t)
-a(∆v,∆t)
-t(∆d,v)
-t(∆v,a)
-Ek(m,v)Ek = 0.5 * m * v^2
-Ep(m,h)
-impulse(m,∆v)
-impulse(F,∆t)
-d(vi,t,a)#equations line 7
-d(vf,t,a)#equations line 9
-d(vi,vf,t)
-F(m,a)
-F(∆t,∆v,m)#equations line 21
-m(F,∆t,∆v)#equations line 21
-∆v(F,∆t,m)#equations line 21
-∆t(m,∆v,F)#equations line 21
-"""
+def blink_warning():
+    import winsound
+    # Play Windows exit sound.
+    winsound.PlaySound('SystemHand', winsound.SND_ASYNC)
+    # .SND_ASYNC returns immediately, without this none of the following code will execute until
+    # the sound has finished playing in its entirety
+    for i in range(3):
+        warning_background()
+
+
+def reset_entrys():
+    for i in entry_list:
+        i.configure(background=original_background_colour, state='normal')
+        i.delete(0, tk.END)
+        master.focus()  # remove cursor focus from entry's
+
+
+class UnacceptableInputType(Exception):
+    """Raised when the input value is not a float"""
+    pass
+
+
+def is_valid(value):
+    try:
+        float(value)
+        return True
+    except TypeError:
+        return False
+
+
+# noinspection PyBroadException
+def submit_variables():
+    values_list = []
+    for i in entry_list:
+        value = i.get()
+        if value == '':
+            value = None
+            values_list.append(value)
+            i.configure(background="pink")
+        elif is_valid(value):
+            value = float(value)
+            values_list.append(value)
+            i.configure(state=tk.DISABLED, disabledbackground='light green')
+        else:
+            messagebox.showerror(title='oopsie!', message=value)
+    print(values_list)  # check that validation was successful
+    try:
+        comp.given(velocity=values_list[0], mass=values_list[1], acceleration=values_list[2], distance=values_list[3],
+                   time=values_list[4], momentum=values_list[5], initial_velocity=entry_list[6])
+    except:
+        blink_warning()
+    else:
+        fetch_results()
+
+
+def fetch_results():
+    available_list = comp.available()
+    for available in available_list:  # peak performance
+        if available == 'mass':
+            entry_list[1].configure(background='light blue')
+        elif available == 'velocity':
+            entry_list[0].configure(background='light blue')
+        elif available == 'acceleration':
+            entry_list[2].configure(background='light blue')
+        elif available == 'distance':
+            entry_list[3].configure(background='light blue')
+        elif available == 'time':
+            entry_list[4].configure(background='light blue')
+        elif available == 'momentum':
+            entry_list[5].configure(background='light blue')
+        elif available == 'initial_velocity':
+            entry_list[6].configure(background='light blue')
+
+
+go_button = tk.Button(button_frame, text="GO", command=submit_variables)
+no_button = tk.Button(button_frame, text="NO", command=reset_entrys)
+go_button.pack(side=tk.RIGHT, anchor='ne', fill=tk.X, expand=tk.YES)
+no_button.pack(side=tk.LEFT, anchor='nw', fill=tk.X, expand=tk.YES)
+
+button_frame.pack(side=tk.BOTTOM, fill=tk.X, expand=tk.YES)
+label_column.pack(side=tk.LEFT)
+entry_column.pack(side=tk.RIGHT)
+
+master.bind('<Return>', lambda event: submit_variables())
+master.bind('<F5>', lambda event: reset_entrys())
+master.bind('<BackSpace>', lambda event: fetch_results())  # testing/debugging
+
+master.mainloop()
