@@ -1,7 +1,10 @@
 
 """
 To Do:
-    - expand self.requirementsDict with info from docstring at end of file
+    create another requirement dict for variables with multiple 'recipes'
+    ex.
+        [in class Physics: __init__]
+        self.alternativeRequirementDict = {...}
 """
 
 
@@ -16,7 +19,8 @@ class Physics:
                              "net_force": None, "applied_force": None, "impulse": None}
         self.requirementDict = {"mass": ['momentum', 'velocity'], "momentum": ['mass', 'velocity'],
                                 "velocity": ['change_distance', 'change_time'],
-                                "acceleration": ['change_velocity', 'change_time']}
+                                "acceleration": ['change_velocity', 'change_time'],
+                                "distance": ['initial_velocity', 'time', 'acceleration']}
         self.possible = []
 
     def given(self, **known):
@@ -54,8 +58,8 @@ Ek(m,v)Ek = 0.5 * m * v^2
 Ep(m,h)
 impulse(m,∆v)
 impulse(F,∆t)
-d(vi,t,a)
-d(vf,t,a)
+d(vi,t,a)#equations line 7
+d(vf,t,a)#equations line 9
 d(vi,vf,t)
 F(m,a)
 F(∆t,∆v,m)#equations line 21

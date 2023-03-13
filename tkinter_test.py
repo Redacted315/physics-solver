@@ -20,6 +20,7 @@ acceleration_label = tk.Label(label_column, text="Acceleration:")
 distance_label = tk.Label(label_column, text="Distance:")
 time_label = tk.Label(label_column, text="Time:")
 momentum_label = tk.Label(label_column, text="Momentum:")
+initial_velocity = tk.Label(label_column, text="Init. Velocity:")
 
 velocity_label.pack(side=tk.TOP, anchor=tk.NW)
 mass_label.pack(side=tk.TOP, anchor=tk.NW)
@@ -27,6 +28,7 @@ acceleration_label.pack(side=tk.TOP, anchor=tk.NW, pady=2)
 distance_label.pack(side=tk.TOP, anchor=tk.NW)
 time_label.pack(side=tk.TOP, anchor=tk.NW)
 momentum_label.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+initial_velocity.pack(side=tk.TOP, anchor=tk.NW)
 
 velocity_entry = tk.Entry(entry_column, width=8, name='velocity')
 mass_entry = tk.Entry(entry_column, width=8, name='mass')
@@ -34,6 +36,7 @@ acceleration_entry = tk.Entry(entry_column, width=8, name='acceleration')
 distance_entry = tk.Entry(entry_column, width=8, name='distance')
 time_entry = tk.Entry(entry_column, width=8, name='time')
 momentum_entry = tk.Entry(entry_column, width=8, name='momentum')
+initial_velocity_entry = tk.Entry(entry_column, width=8, name='initial_velocity')
 
 velocity_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
 mass_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
@@ -41,8 +44,10 @@ acceleration_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
 distance_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
 time_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
 momentum_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
+initial_velocity_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
 
-entry_list = [velocity_entry, mass_entry, acceleration_entry, distance_entry, time_entry, momentum_entry]
+entry_list = [velocity_entry, mass_entry, acceleration_entry, distance_entry, time_entry, momentum_entry,
+              initial_velocity_entry]
 
 original_background_colour = velocity_entry.cget("background")
 
@@ -103,10 +108,10 @@ def submit_variables():
             i.configure(state=tk.DISABLED, disabledbackground='light green')
         else:
             messagebox.showerror(title='oopsie!', message=value)
-    # print(values_list) # check that validation was successful
+    print(values_list)  # check that validation was successful
     try:
         comp.given(velocity=values_list[0], mass=values_list[1], acceleration=values_list[2], distance=values_list[3],
-                   time=values_list[4], momentum=values_list[5])
+                   time=values_list[4], momentum=values_list[5], initial_velocity=entry_list[6])
     except:
         blink_warning()
     else:
@@ -128,6 +133,8 @@ def fetch_results():
             entry_list[4].configure(background='light blue')
         elif available == 'momentum':
             entry_list[5].configure(background='light blue')
+        elif available == 'initial_velocity':
+            entry_list[6].configure(background='light blue')
 
 
 go_button = tk.Button(button_frame, text="GO", command=submit_variables)
