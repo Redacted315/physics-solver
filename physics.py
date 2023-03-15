@@ -11,16 +11,19 @@ To Do:
 class Physics:
     def __init__(self):
         self.known = None
-        self.variableDict = {"velocity": None, "change_velocity": None, "initial_velocity": None,
-                             "final_velocity": None, "acceleration": None, "change_acceleration": None,
-                             "time": None, "change_time": None, "distance": None, "change_distance": None,
-                             "momentum": None, "change_momentum": None,
-                             "mass": None, "potential_energy": None, "kinetic_energy": None, "height": None,
-                             "net_force": None, "applied_force": None, "impulse": None}
-        self.requirementDict = {"mass": ['momentum', 'velocity'], "momentum": ['mass', 'velocity'],
-                                "velocity": ['change_distance', 'change_time'],
-                                "acceleration": ['change_velocity', 'change_time'],
-                                "distance": ['initial_velocity', 'time', 'acceleration']}
+        self.variableDict = dict(velocity=None, change_velocity=None, initial_velocity=None, final_velocity=None,
+                                 acceleration=None, change_acceleration=None, time=None, change_time=None,
+                                 distance=None, change_distance=None, momentum=None, change_momentum=None, mass=None,
+                                 potential_energy=None, kinetic_energy=None, height=None, net_force=None,
+                                 applied_force=None, impulse=None, force=None)
+
+        self.requirementDict = dict(mass=['momentum', 'velocity'], momentum=['mass', 'velocity'],
+                                    velocity=['change_distance', 'change_time'],
+                                    acceleration=['change_velocity', 'change_time'],
+                                    distance=['initial_velocity', 'time', 'acceleration'],
+                                    time=['change_distance', 'velocity'],
+                                    potential_energy=['mass', 'height'], force=['mass', 'acceleration'],
+                                    )
         self.possible = []
 
     def given(self, **known):
@@ -47,23 +50,25 @@ class Physics:
 
 """
 requirements:
--m(p,v)
+
 m(Ep,h)#equations line 25
--p(m,v)
--v(∆d,∆t)
-a(∆v,∆t)
-t(∆d,v)
-t(∆v,a)
-Ek(m,v)Ek = 0.5 * m * v^2
-Ep(m,h)
+m(F,∆t,∆v)#equations line 21
 impulse(m,∆v)
 impulse(F,∆t)
-d(vi,t,a)#equations line 7
 d(vf,t,a)#equations line 9
 d(vi,vf,t)
-F(m,a)
+t(∆v,a)
+Ek(m,v)Ek = 0.5 * m * v^2
 F(∆t,∆v,m)#equations line 21
-m(F,∆t,∆v)#equations line 21
 ∆v(F,∆t,m)#equations line 21
 ∆t(m,∆v,F)#equations line 21
+-m(p,v)
+-p(m,v)
+-v(∆d,∆t)
+-F(m,a)
+-a(∆v,∆t)
+-t(∆d,v)
+-Ep(m,h)
+-d(vi,t,a)#equations line 7
+
 """

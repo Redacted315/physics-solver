@@ -1,8 +1,8 @@
 import tkinter as tk
 from time import sleep
 from tkinter import messagebox
-
-from main import Physics
+from PIL import Image, ImageTk
+from physics import Physics
 
 master = tk.Tk()
 comp = Physics()
@@ -10,33 +10,35 @@ comp = Physics()
 # master.resizable("false", "false")
 master.resizable(False, False)
 
+stat_font = ("Arial", 20)
+
 label_column = tk.Frame(master)
 entry_column = tk.Frame(master)
 button_frame = tk.Frame(master)
 
-velocity_label = tk.Label(label_column, text="Velocity:")
-mass_label = tk.Label(label_column, text="Mass:")
-acceleration_label = tk.Label(label_column, text="Acceleration:")
-distance_label = tk.Label(label_column, text="Distance:")
-time_label = tk.Label(label_column, text="Time:")
-momentum_label = tk.Label(label_column, text="Momentum:")
-initial_velocity = tk.Label(label_column, text="Init. Velocity:")
+velocity_label = tk.Label(label_column, text="Velocity:", font=stat_font)
+mass_label = tk.Label(label_column, text="Mass:", font=stat_font)
+acceleration_label = tk.Label(label_column, text="Acceleration:", font=stat_font)
+distance_label = tk.Label(label_column, text="Distance:", font=stat_font)
+time_label = tk.Label(label_column, text="Time:", font=stat_font)
+momentum_label = tk.Label(label_column, text="Momentum:", font=stat_font)
+initial_velocity = tk.Label(label_column, text="Init. Velocity:", font=stat_font)
 
-velocity_label.pack(side=tk.TOP, anchor=tk.NW)
-mass_label.pack(side=tk.TOP, anchor=tk.NW)
-acceleration_label.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-distance_label.pack(side=tk.TOP, anchor=tk.NW)
-time_label.pack(side=tk.TOP, anchor=tk.NW)
-momentum_label.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-initial_velocity.pack(side=tk.TOP, anchor=tk.NW)
+velocity_label.pack(side=tk.TOP, anchor='e')  # , anchor=tk.NW
+mass_label.pack(side=tk.TOP, anchor='e')
+acceleration_label.pack(side=tk.TOP, anchor='e', pady=2)
+distance_label.pack(side=tk.TOP, anchor='e')
+time_label.pack(side=tk.TOP, anchor='e')
+momentum_label.pack(side=tk.TOP, anchor='e', pady=2)
+initial_velocity.pack(side=tk.TOP, anchor='e')
 
-velocity_entry = tk.Entry(entry_column, width=8, name='velocity')
-mass_entry = tk.Entry(entry_column, width=8, name='mass')
-acceleration_entry = tk.Entry(entry_column, width=8, name='acceleration')
-distance_entry = tk.Entry(entry_column, width=8, name='distance')
-time_entry = tk.Entry(entry_column, width=8, name='time')
-momentum_entry = tk.Entry(entry_column, width=8, name='momentum')
-initial_velocity_entry = tk.Entry(entry_column, width=8, name='initial_velocity')
+velocity_entry = tk.Entry(entry_column, width=8, name='velocity', font=stat_font)
+mass_entry = tk.Entry(entry_column, width=8, name='mass', font=stat_font)
+acceleration_entry = tk.Entry(entry_column, width=8, name='acceleration', font=stat_font)
+distance_entry = tk.Entry(entry_column, width=8, name='distance', font=stat_font)
+time_entry = tk.Entry(entry_column, width=8, name='time', font=stat_font)
+momentum_entry = tk.Entry(entry_column, width=8, name='momentum', font=stat_font)
+initial_velocity_entry = tk.Entry(entry_column, width=8, name='initial_velocity', font=stat_font)
 
 velocity_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
 mass_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
@@ -137,17 +139,23 @@ def fetch_results():
             entry_list[6].configure(background='light blue')
 
 
-go_button = tk.Button(button_frame, text="GO", command=submit_variables)
-no_button = tk.Button(button_frame, text="NO", command=reset_entrys)
-go_button.pack(side=tk.RIGHT, anchor='ne', fill=tk.X, expand=tk.YES)
-no_button.pack(side=tk.LEFT, anchor='nw', fill=tk.X, expand=tk.YES)
+reset_img4 = tk.PhotoImage(file='reset_.png')
 
-button_frame.pack(side=tk.BOTTOM, fill=tk.X, expand=tk.YES)
+
+go_button = tk.Button(button_frame, text="->", command=submit_variables, font=stat_font)
+no_button = tk.Button(button_frame, image=reset_img4, command=reset_entrys, font=stat_font, borderwidth=0)
+go_button.pack(side=tk.RIGHT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=50, pady=3)
+no_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=50, pady=3)
+
+button_frame.pack(side=tk.BOTTOM, fill=tk.NONE, expand=tk.NO)
 label_column.pack(side=tk.LEFT)
 entry_column.pack(side=tk.RIGHT)
 
 master.bind('<Return>', lambda event: submit_variables())
 master.bind('<F5>', lambda event: reset_entrys())
-master.bind('<BackSpace>', lambda event: fetch_results())  # testing/debugging
+# master.bind('<BackSpace>', lambda event: fetch_results())  # testing/debugging
+master.update()
+my_width = acceleration_label.winfo_width()
+print(my_width)
 
 master.mainloop()
