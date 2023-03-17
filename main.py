@@ -1,7 +1,6 @@
 import tkinter as tk
 from time import sleep
 from tkinter import messagebox
-from PIL import Image, ImageTk
 from physics import Physics
 
 master = tk.Tk()
