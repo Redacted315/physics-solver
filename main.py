@@ -7,67 +7,58 @@ from physics import Physics
 master = tk.Tk()
 comp = Physics()
 
-# master.resizable("false", "false")
+master.title("Variable Detective")
 master.resizable(False, False)
+master.iconbitmap("assets/icon.ico")
+master.option_add('*tearOff', False)
+
+menubar = tk.Menu(master)
+master['menu'] = menubar
+menu_options = tk.Menu(menubar)
+menu_edit = tk.Menu(menubar)
+menubar.add_cascade(menu=menu_options, label='Options')
+menubar.add_cascade(menu=menu_edit, label='Help')
+menu_options.add_command(label='Coming soon...', state='disabled', activebackground='SystemMenu')
+menu_options.add_command(label='Close', command=quit)
 
 stat_font = ("Arial", 20)
 
-label_column = tk.Frame(master)
-entry_column = tk.Frame(master)
+label_column_one = tk.Frame(master)
+entry_column_one = tk.Frame(master)
+label_column_two = tk.Frame(master)
+entry_column_two = tk.Frame(master)
+label_column_three = tk.Frame(master)
+entry_column_three = tk.Frame(master)
 button_frame = tk.Frame(master)
 
-velocity_label = tk.Label(label_column, text="Velocity:", font=stat_font)
-mass_label = tk.Label(label_column, text="Mass:", font=stat_font)
-acceleration_label = tk.Label(label_column, text="Acceleration:", font=stat_font)
-distance_label = tk.Label(label_column, text="Distance:", font=stat_font)
-time_label = tk.Label(label_column, text="Time:", font=stat_font)
-momentum_label = tk.Label(label_column, text="Momentum:", font=stat_font)
-initial_velocity = tk.Label(label_column, text="Init. Velocity:", font=stat_font)
+delta = '\u0394'
+entry_list = []
+for i in list(comp.variableDict.keys()):
+    tk.Label(label_column_one, text=i.replace("_", " ").replace("change", delta),
+             font=stat_font).pack(side=tk.TOP, anchor='e', pady=1)
+    a = tk.Entry(entry_column_one, width=8, name=i, font=stat_font)
+    entry_list.append(a)
 
-velocity_label.pack(side=tk.TOP, anchor='e')  # , anchor=tk.NW
-mass_label.pack(side=tk.TOP, anchor='e')
-acceleration_label.pack(side=tk.TOP, anchor='e', pady=2)
-distance_label.pack(side=tk.TOP, anchor='e')
-time_label.pack(side=tk.TOP, anchor='e')
-momentum_label.pack(side=tk.TOP, anchor='e', pady=2)
-initial_velocity.pack(side=tk.TOP, anchor='e')
 
-velocity_entry = tk.Entry(entry_column, width=8, name='velocity', font=stat_font)
-mass_entry = tk.Entry(entry_column, width=8, name='mass', font=stat_font)
-acceleration_entry = tk.Entry(entry_column, width=8, name='acceleration', font=stat_font)
-distance_entry = tk.Entry(entry_column, width=8, name='distance', font=stat_font)
-time_entry = tk.Entry(entry_column, width=8, name='time', font=stat_font)
-momentum_entry = tk.Entry(entry_column, width=8, name='momentum', font=stat_font)
-initial_velocity_entry = tk.Entry(entry_column, width=8, name='initial_velocity', font=stat_font)
-
-velocity_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-mass_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-acceleration_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-distance_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-time_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-momentum_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-initial_velocity_entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-
-entry_list = [velocity_entry, mass_entry, acceleration_entry, distance_entry, time_entry, momentum_entry,
-              initial_velocity_entry]
-
-original_background_colour = velocity_entry.cget("background")
+for entry in entry_list:
+    entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
 
 
 def warning_background():  # flashes entry background colour
-    for i in entry_list:
-        i.configure(state='disabled', disabledbackground='#ebd36c')  # yellow
+    for entry in entry_list:
+        entry.configure(state='disabled', disabledbackground='#ebd36c')  # yellow
     master.update_idletasks()
     sleep(0.2)
-    for i in entry_list:
-        i.configure(state='disabled', disabledbackground='#bf6e60')  # red
+    for entry in entry_list:
+        entry.configure(state='disabled', disabledbackground='#bf6e60')  # red
     master.update_idletasks()
     sleep(0.2)
+    for entry in entry_list:
+        entry.configure(state='normal')
 
 
 def blink_warning():
     import winsound
-    # Play Windows exit sound.
     winsound.PlaySound('SystemHand', winsound.SND_ASYNC)
     # .SND_ASYNC returns immediately, without this none of the following code will execute until
     # the sound has finished playing in its entirety
@@ -76,44 +67,46 @@ def blink_warning():
 
 
 def reset_entrys():
-    for i in entry_list:
-        i.configure(background=original_background_colour, state='normal')
-        i.delete(0, tk.END)
+    for entry in entry_list:
+        entry.configure(background='SystemWindow', state='normal')
+        entry.delete(0, tk.END)
         master.focus()  # remove cursor focus from entry's
-
-
-class UnacceptableInputType(Exception):
-    """Raised when the input value is not a float"""
-    pass
 
 
 def is_valid(value):
     try:
         float(value)
         return True
-    except TypeError:
+    except TypeError and ValueError:
         return False
 
 
 # noinspection PyBroadException
 def submit_variables():
     values_list = []
-    for i in entry_list:
-        value = i.get()
+    for entry in entry_list:
+        value = entry.get()
         if value == '':
             value = None
             values_list.append(value)
-            i.configure(background="pink")
+            entry.configure(background="pink")
         elif is_valid(value):
             value = float(value)
             values_list.append(value)
-            i.configure(state=tk.DISABLED, disabledbackground='light green')
+            entry.configure(state=tk.DISABLED, disabledbackground='light green')
         else:
-            messagebox.showerror(title='oopsie!', message=value)
+            blink_warning()
     print(values_list)  # check that validation was successful
     try:
-        comp.given(velocity=values_list[0], mass=values_list[1], acceleration=values_list[2], distance=values_list[3],
-                   time=values_list[4], momentum=values_list[5], initial_velocity=entry_list[6])
+        comp.given(velocity=values_list[0], change_velocity=values_list[1], initial_velocity=values_list[2],
+                   final_velocity=values_list[3],
+                   acceleration=values_list[4], change_acceleration=values_list[5], time=values_list[6],
+                   change_time=values_list[7],
+                   distance=values_list[8], change_distance=values_list[9], momentum=values_list[10],
+                   change_momentum=values_list[11], mass=values_list[12],
+                   potential_energy=values_list[13], kinetic_energy=values_list[14], height=values_list[15],
+                   net_force=values_list[16],
+                   impulse=values_list[17], force=values_list[18])
     except:
         blink_warning()
     else:
@@ -123,39 +116,32 @@ def submit_variables():
 def fetch_results():
     available_list = comp.available()
     for available in available_list:  # peak performance
-        if available == 'mass':
-            entry_list[1].configure(background='light blue')
-        elif available == 'velocity':
-            entry_list[0].configure(background='light blue')
-        elif available == 'acceleration':
-            entry_list[2].configure(background='light blue')
-        elif available == 'distance':
-            entry_list[3].configure(background='light blue')
-        elif available == 'time':
-            entry_list[4].configure(background='light blue')
-        elif available == 'momentum':
-            entry_list[5].configure(background='light blue')
-        elif available == 'initial_velocity':
-            entry_list[6].configure(background='light blue')
+        for entry in entry_list:
+            if available == entry.winfo_name():
+                entry.configure(background='light blue')
 
 
-reset_img4 = tk.PhotoImage(file='reset_.png')
+reset_image = tk.PhotoImage(file='assets/AdobeStock_374462435.png')
+reset_image = reset_image.subsample(50)
 
+search_image = tk.PhotoImage(file='assets/AdobeStock_227446387.png')
+search_image = search_image.subsample(50)
 
-go_button = tk.Button(button_frame, text="->", command=submit_variables, font=stat_font)
-no_button = tk.Button(button_frame, image=reset_img4, command=reset_entrys, font=stat_font, borderwidth=0)
-go_button.pack(side=tk.RIGHT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=50, pady=3)
-no_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=50, pady=3)
-
+go_button = tk.Button(button_frame, image=search_image, command=submit_variables, font=stat_font, borderwidth=0)
+no_button = tk.Button(button_frame, image=reset_image, command=reset_entrys, font=stat_font, borderwidth=0)
+no_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=20, pady=3)
+go_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=20, pady=3)
 button_frame.pack(side=tk.BOTTOM, fill=tk.NONE, expand=tk.NO)
-label_column.pack(side=tk.LEFT)
-entry_column.pack(side=tk.RIGHT)
+label_column_one.pack(side=tk.LEFT)
+entry_column_one.pack(side=tk.LEFT)
 
 master.bind('<Return>', lambda event: submit_variables())
 master.bind('<F5>', lambda event: reset_entrys())
-# master.bind('<BackSpace>', lambda event: fetch_results())  # testing/debugging
+
 master.update()
-my_width = acceleration_label.winfo_width()
-print(my_width)
+
+button_frame_width = button_frame.winfo_width()
+reset_button_width = no_button.winfo_width()
+search_button_width = go_button.winfo_width()
 
 master.mainloop()

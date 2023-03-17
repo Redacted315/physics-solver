@@ -1,4 +1,3 @@
-
 """
 To Do:
     create another requirement dict for variables with multiple 'recipes'
@@ -15,7 +14,7 @@ class Physics:
                                  acceleration=None, change_acceleration=None, time=None, change_time=None,
                                  distance=None, change_distance=None, momentum=None, change_momentum=None, mass=None,
                                  potential_energy=None, kinetic_energy=None, height=None, net_force=None,
-                                 applied_force=None, impulse=None, force=None)
+                                 impulse=None, force=None)
 
         self.requirementDict = dict(mass=['momentum', 'velocity'], momentum=['mass', 'velocity'],
                                     velocity=['change_distance', 'change_time'],
@@ -23,7 +22,7 @@ class Physics:
                                     distance=['initial_velocity', 'time', 'acceleration'],
                                     time=['change_distance', 'velocity'],
                                     potential_energy=['mass', 'height'], force=['mass', 'acceleration'],
-                                    )
+                                    impulse=['mass', 'change_velocity'], kinetic_energy=['mass', 'velocity'])
         self.possible = []
 
     def given(self, **known):
