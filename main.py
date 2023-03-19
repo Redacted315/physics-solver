@@ -2,6 +2,7 @@ import tkinter as tk
 from time import sleep
 from tkinter import messagebox
 from physics import Physics
+import webbrowser
 
 master = tk.Tk()
 comp = Physics()
@@ -10,17 +11,30 @@ master.title("Variable Detective")
 master.resizable(False, False)
 master.iconbitmap("assets/icon.ico")
 master.option_add('*tearOff', False)
+stat_font = ("Arial", 20)
 
-menubar = tk.Menu(master)
-master['menu'] = menubar
-menu_options = tk.Menu(menubar)
-menu_edit = tk.Menu(menubar)
-menubar.add_cascade(menu=menu_options, label='Options')
-menubar.add_cascade(menu=menu_edit, label='Help')
+
+def callback(url):
+    webbrowser.open_new_tab(url)
+
+
+def link_github():
+    github = tk.Toplevel(master)
+    github.geometry("300x70")
+    link = tk.Label(github, text='Contribute on GitHub!', font='Arial 12 underline', fg='blue')
+    link.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+    link.bind("<Button-1>", lambda e: callback("https://github.com/Redacted315/physics-solver"))
+
+
+menu_bar = tk.Menu(master)
+master['menu'] = menu_bar
+menu_options = tk.Menu(menu_bar)
+menu_edit = tk.Menu(menu_bar)
+menu_bar.add_cascade(menu=menu_options, label='Options')
+menu_bar.add_cascade(menu=menu_edit, label='Help')
 menu_options.add_command(label='Coming soon...', state='disabled', activebackground='SystemMenu')
 menu_options.add_command(label='Close', command=quit)
-
-stat_font = ("Arial", 20)
+menu_edit.add_command(label='Help', command=link_github)
 
 label_column_one = tk.Frame(master)
 entry_column_one = tk.Frame(master)
@@ -33,11 +47,16 @@ button_frame = tk.Frame(master)
 delta = '\u0394'
 entry_list = []
 for i in list(comp.variableDict.keys()):
-    tk.Label(label_column_one, text=i.replace("_", " ").replace("change", delta),
+    label_frame = label_column_one
+    entry_frame = entry_column_one
+    # print(list(comp.variableDict.keys()).index(i))
+    if list(comp.variableDict.keys()).index(i) >= 10:
+        label_frame = label_column_two
+        entry_frame = entry_column_two
+    tk.Label(label_frame, text=i.replace("_", " ").replace("change", delta),
              font=stat_font).pack(side=tk.TOP, anchor='e', pady=1)
-    a = tk.Entry(entry_column_one, width=8, name=i, font=stat_font)
+    a = tk.Entry(entry_frame, width=8, name=i, font=stat_font)
     entry_list.append(a)
-
 
 for entry in entry_list:
     entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
@@ -95,7 +114,7 @@ def submit_variables():
             entry.configure(state=tk.DISABLED, disabledbackground='light green')
         else:
             blink_warning()
-    print(values_list)  # check that validation was successful
+    # print(values_list)  # check that validation was successful
     try:
         comp.given(velocity=values_list[0], change_velocity=values_list[1], initial_velocity=values_list[2],
                    final_velocity=values_list[3],
@@ -130,9 +149,12 @@ go_button = tk.Button(button_frame, image=search_image, command=submit_variables
 no_button = tk.Button(button_frame, image=reset_image, command=reset_entrys, font=stat_font, borderwidth=0)
 no_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=20, pady=3)
 go_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=20, pady=3)
+
 button_frame.pack(side=tk.BOTTOM, fill=tk.NONE, expand=tk.NO)
 label_column_one.pack(side=tk.LEFT)
 entry_column_one.pack(side=tk.LEFT)
+label_column_two.pack(side=tk.LEFT)
+entry_column_two.pack(side=tk.LEFT)
 
 master.bind('<Return>', lambda event: submit_variables())
 master.bind('<F5>', lambda event: reset_entrys())
