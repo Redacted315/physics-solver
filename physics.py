@@ -10,23 +10,23 @@ To Do:
 class Physics:
     def __init__(self):
         self.known = None
-        self.variableDict = dict(velocity=None, change_velocity=None, initial_velocity=None, final_velocity=None,
-                                 acceleration=None, change_acceleration=None, time=None, change_time=None,
-                                 distance=None, change_distance=None, momentum=None, change_momentum=None, mass=None,
-                                 potential_energy=None, kinetic_energy=None, height=None, net_force=None,
+        self.variableDict = dict(velocity=None, acceleration=None, time=None, distance=None, displacement=None,
+                                 momentum=None, mass=None, potential_energy=None, kinetic_energy=None,
                                  impulse=None, force=None)
 
         self.requirementDict = dict(mass=['momentum', 'velocity'], momentum=['mass', 'velocity'],
-                                    velocity=['change_distance', 'change_time'],
-                                    acceleration=['change_velocity', 'change_time'],
-                                    distance=['initial_velocity', 'time', 'acceleration'],
-                                    time=['change_distance', 'velocity'],
-                                    potential_energy=['mass', 'height'], force=['mass', 'acceleration'],
-                                    impulse=['mass', 'change_velocity'], kinetic_energy=['mass', 'velocity'])
+                                    velocity=['displacement', 'time'],
+                                    acceleration=['velocity', 'time'],
+                                    distance=['velocity', 'time'], time=['displacement', 'velocity'],
+                                    potential_energy=['mass', 'distance'], force=['mass', 'acceleration'],
+                                    impulse=['mass', 'velocity'], kinetic_energy=['mass', 'velocity'])
         self.possible = []
 
     def given(self, **known):
         self.known = known
+        for i in self.known:
+            if self.known[i] == '':
+                self.known[i] = None
         for variable in self.variableDict:
             if variable in list(known.keys()):
                 self.variableDict[variable] = known[variable]
@@ -68,6 +68,6 @@ F(∆t,∆v,m)#equations line 21
 -a(∆v,∆t)
 -t(∆d,v)
 -Ep(m,h)
--d(vi,t,a)#equations line 7
+d(vi,t,a)#equations line 7
 
 """

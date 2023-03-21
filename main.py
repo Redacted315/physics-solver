@@ -1,7 +1,6 @@
 import tkinter as tk
-from time import sleep
-from tkinter import messagebox
 from physics import Physics
+from tooltip import *
 import webbrowser
 
 master = tk.Tk()
@@ -40,48 +39,67 @@ label_column_one = tk.Frame(master)
 entry_column_one = tk.Frame(master)
 label_column_two = tk.Frame(master)
 entry_column_two = tk.Frame(master)
-label_column_three = tk.Frame(master)
-entry_column_three = tk.Frame(master)
 button_frame = tk.Frame(master)
 
-delta = '\u0394'
-entry_list = []
-for i in list(comp.variableDict.keys()):
-    label_frame = label_column_one
-    entry_frame = entry_column_one
-    # print(list(comp.variableDict.keys()).index(i))
-    if list(comp.variableDict.keys()).index(i) >= 10:
-        label_frame = label_column_two
-        entry_frame = entry_column_two
-    tk.Label(label_frame, text=i.replace("_", " ").replace("change", delta),
-             font=stat_font).pack(side=tk.TOP, anchor='e', pady=1)
-    a = tk.Entry(entry_frame, width=8, name=i, font=stat_font)
-    entry_list.append(a)
+velo_image = tk.PhotoImage(file='assets/velocity.png')
+acc_image = tk.PhotoImage(file='assets/acceleration.png')
+time_image = tk.PhotoImage(file='assets/time.png')
+dist_image = tk.PhotoImage(file='assets/distance.png')
+disp_image = tk.PhotoImage(file='assets/displacement.png')
+mom_image = tk.PhotoImage(file='assets/momentum.png')
+mass_image = tk.PhotoImage(file='assets/mass.png')
+pot_image = tk.PhotoImage(file='assets/potential.png')
+kin_image = tk.PhotoImage(file='assets/kinetic.png')
+impulse_image = tk.PhotoImage(file='assets/impulse.png')
+force_image = tk.PhotoImage(file='assets/force.png')
 
-for entry in entry_list:
-    entry.pack(side=tk.TOP, anchor=tk.NW, pady=2)
-
-
-def warning_background():  # flashes entry background colour
-    for entry in entry_list:
-        entry.configure(state='disabled', disabledbackground='#ebd36c')  # yellow
-    master.update_idletasks()
-    sleep(0.2)
-    for entry in entry_list:
-        entry.configure(state='disabled', disabledbackground='#bf6e60')  # red
-    master.update_idletasks()
-    sleep(0.2)
-    for entry in entry_list:
-        entry.configure(state='normal')
-
-
-def blink_warning():
-    import winsound
-    winsound.PlaySound('SystemHand', winsound.SND_ASYNC)
-    # .SND_ASYNC returns immediately, without this none of the following code will execute until
-    # the sound has finished playing in its entirety
-    for i in range(3):
-        warning_background()
+velocity_label = tk.Label(label_column_one, image=velo_image, font=stat_font)
+velocity_label.grid(row=0, column=0)
+acceleration_label = tk.Label(label_column_one, image=acc_image, font=stat_font)
+acceleration_label.grid(row=1, column=0)
+time_label = tk.Label(label_column_one, image=time_image, font=stat_font)
+time_label.grid(row=2, column=0)
+distance_label = tk.Label(label_column_one, image=dist_image, font=stat_font)
+distance_label.grid(row=3, column=0)
+displacement_label = tk.Label(label_column_one, image=disp_image, font=stat_font)
+displacement_label.grid(row=4, column=0)
+momentum_label = tk.Label(label_column_one, image=mom_image, font=stat_font)
+momentum_label.grid(row=5, column=0)
+mass_label = tk.Label(label_column_two, image=mass_image, font=stat_font)
+mass_label.grid(row=0, column=0)
+potential_energy_label = tk.Label(label_column_two, image=pot_image, font=stat_font)
+potential_energy_label.grid(row=1, column=0)
+kinetic_energy_label = tk.Label(label_column_two, image=kin_image, font=stat_font)
+kinetic_energy_label.grid(row=2, column=0)
+impulse_label = tk.Label(label_column_two, image=impulse_image, font=stat_font)
+impulse_label.grid(row=3, column=0)
+force_label = tk.Label(label_column_two, image=force_image, font=stat_font)
+force_label.grid(row=4, column=0)
+# <labels entrys>
+velocity_entry = tk.Entry(entry_column_one, font=stat_font, width=8, name='velocity')
+velocity_entry.grid(row=0, column=0, padx=2, pady=4)
+acceleration_entry = tk.Entry(entry_column_one, font=stat_font, width=8, name='acceleration')
+acceleration_entry.grid(row=1, column=0, padx=2, pady=4)
+time_entry = tk.Entry(entry_column_one, font=stat_font, width=8, name='time')
+time_entry.grid(row=2, column=0, padx=2, pady=4)
+distance_entry = tk.Entry(entry_column_one, font=stat_font, width=8, name='distance')
+distance_entry.grid(row=3, column=0, padx=2, pady=4)
+displacement_entry = tk.Entry(entry_column_one, font=stat_font, width=8, name='displacement')
+displacement_entry.grid(row=4, column=0, padx=2, pady=4)
+momentum_entry = tk.Entry(entry_column_one, font=stat_font, width=8, name='momentum')
+momentum_entry.grid(row=5, column=0, padx=2, pady=4)
+mass_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='mass')
+mass_entry.grid(row=0, column=0, padx=2, pady=4)
+potential_energy_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='energy_potential')
+potential_energy_entry.grid(row=1, column=0, padx=2, pady=4)
+kinetic_energy_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='energy_kinetic')
+kinetic_energy_entry.grid(row=2, column=0, padx=2, pady=4)
+impulse_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='impulse')
+impulse_entry.grid(row=3, column=0, padx=2, pady=4)
+force_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='force')
+force_entry.grid(row=4, column=0, padx=2, pady=4)
+entry_list = [velocity_entry, acceleration_entry, time_entry, distance_entry, displacement_entry, momentum_entry,
+              mass_entry, potential_energy_entry, kinetic_energy_entry, impulse_entry, force_entry]
 
 
 def reset_entrys():
@@ -91,44 +109,12 @@ def reset_entrys():
         master.focus()  # remove cursor focus from entry's
 
 
-def is_valid(value):
-    try:
-        float(value)
-        return True
-    except TypeError and ValueError:
-        return False
-
-
-# noinspection PyBroadException
 def submit_variables():
-    values_list = []
-    for entry in entry_list:
-        value = entry.get()
-        if value == '':
-            value = None
-            values_list.append(value)
-            entry.configure(background="pink")
-        elif is_valid(value):
-            value = float(value)
-            values_list.append(value)
-            entry.configure(state=tk.DISABLED, disabledbackground='light green')
-        else:
-            blink_warning()
-    # print(values_list)  # check that validation was successful
-    try:
-        comp.given(velocity=values_list[0], change_velocity=values_list[1], initial_velocity=values_list[2],
-                   final_velocity=values_list[3],
-                   acceleration=values_list[4], change_acceleration=values_list[5], time=values_list[6],
-                   change_time=values_list[7],
-                   distance=values_list[8], change_distance=values_list[9], momentum=values_list[10],
-                   change_momentum=values_list[11], mass=values_list[12],
-                   potential_energy=values_list[13], kinetic_energy=values_list[14], height=values_list[15],
-                   net_force=values_list[16],
-                   impulse=values_list[17], force=values_list[18])
-    except:
-        blink_warning()
-    else:
-        fetch_results()
+    comp.given(velocity=velocity_entry.get(), acceleration=acceleration_entry.get(), time=time_entry.get(),
+               distance=distance_entry.get(), displacement=displacement_entry.get(), momentum=momentum_entry.get(),
+               mass=mass_entry.get(), potential_energy=potential_energy_entry.get(),
+               kinetic_energy=kinetic_energy_entry.get(), impulse=impulse_entry.get(), force=force_entry.get())
+    fetch_results()
 
 
 def fetch_results():
@@ -141,14 +127,26 @@ def fetch_results():
 
 reset_image = tk.PhotoImage(file='assets/AdobeStock_374462435.png')
 reset_image = reset_image.subsample(50)
-
 search_image = tk.PhotoImage(file='assets/AdobeStock_227446387.png')
 search_image = search_image.subsample(50)
-
 go_button = tk.Button(button_frame, image=search_image, command=submit_variables, font=stat_font, borderwidth=0)
-no_button = tk.Button(button_frame, image=reset_image, command=reset_entrys, font=stat_font, borderwidth=0)
-no_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=20, pady=3)
+reset_button = tk.Button(button_frame, image=reset_image, command=reset_entrys, font=stat_font, borderwidth=0)
+reset_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=20, pady=3)
 go_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=20, pady=3)
+
+CreateToolTip(reset_button, text='Reset')
+CreateToolTip(go_button, text='Go')
+CreateToolTip(velocity_label, text='Velocity (m/s)')
+CreateToolTip(acceleration_label, text='Acceleration (m/s^2)')
+CreateToolTip(time_label, text='Time (s)')
+CreateToolTip(distance_label, text='Distance (m)')
+CreateToolTip(displacement_label, text='Displacement (m)')
+CreateToolTip(momentum_label, text='Momentum (kg*m/s)')
+CreateToolTip(mass_label, text='Mass (kg)')
+CreateToolTip(potential_energy_label, text='Potential Energy (J)')
+CreateToolTip(kinetic_energy_label, text='Kinetic Energy (J)')
+CreateToolTip(impulse_label, text='Impulse (N*s)')
+CreateToolTip(force_label, text='Force (N)')
 
 button_frame.pack(side=tk.BOTTOM, fill=tk.NONE, expand=tk.NO)
 label_column_one.pack(side=tk.LEFT)
@@ -160,9 +158,5 @@ master.bind('<Return>', lambda event: submit_variables())
 master.bind('<F5>', lambda event: reset_entrys())
 
 master.update()
-
-button_frame_width = button_frame.winfo_width()
-reset_button_width = no_button.winfo_width()
-search_button_width = go_button.winfo_width()
 
 master.mainloop()
