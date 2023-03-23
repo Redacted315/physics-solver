@@ -2,6 +2,7 @@ import tkinter as tk
 from physics import Physics
 from tooltip import *
 import webbrowser
+import sys
 
 master = tk.Tk()
 comp = Physics()
@@ -25,6 +26,10 @@ def link_github():
     link.bind("<Button-1>", lambda e: callback("https://github.com/Redacted315/physics-solver"))
 
 
+def kill_self():
+    sys.exit(727)
+
+
 menu_bar = tk.Menu(master)
 master['menu'] = menu_bar
 menu_options = tk.Menu(menu_bar)
@@ -32,7 +37,7 @@ menu_edit = tk.Menu(menu_bar)
 menu_bar.add_cascade(menu=menu_options, label='Options')
 menu_bar.add_cascade(menu=menu_edit, label='Help')
 menu_options.add_command(label='Coming soon...', state='disabled', activebackground='SystemMenu')
-menu_options.add_command(label='Close', command=quit)
+menu_options.add_command(label='Close', command=kill_self)
 menu_edit.add_command(label='Help', command=link_github)
 
 label_column_one = tk.Frame(master)
@@ -90,9 +95,9 @@ momentum_entry = tk.Entry(entry_column_one, font=stat_font, width=8, name='momen
 momentum_entry.grid(row=5, column=0, padx=2, pady=4)
 mass_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='mass')
 mass_entry.grid(row=0, column=0, padx=2, pady=4)
-potential_energy_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='energy_potential')
+potential_energy_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='potential_energy')
 potential_energy_entry.grid(row=1, column=0, padx=2, pady=4)
-kinetic_energy_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='energy_kinetic')
+kinetic_energy_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='kinetic_energy')
 kinetic_energy_entry.grid(row=2, column=0, padx=2, pady=4)
 impulse_entry = tk.Entry(entry_column_two, font=stat_font, width=8, name='impulse')
 impulse_entry.grid(row=3, column=0, padx=2, pady=4)
@@ -102,11 +107,12 @@ entry_list = [velocity_entry, acceleration_entry, time_entry, distance_entry, di
               mass_entry, potential_energy_entry, kinetic_energy_entry, impulse_entry, force_entry]
 
 
-def reset_entrys():
+def reset():
     for entry in entry_list:
         entry.configure(background='SystemWindow', state='normal')
         entry.delete(0, tk.END)
         master.focus()  # remove cursor focus from entry's
+        comp.clear()
 
 
 def submit_variables():
@@ -130,7 +136,7 @@ reset_image = reset_image.subsample(50)
 search_image = tk.PhotoImage(file='assets/AdobeStock_227446387.png')
 search_image = search_image.subsample(50)
 go_button = tk.Button(button_frame, image=search_image, command=submit_variables, font=stat_font, borderwidth=0)
-reset_button = tk.Button(button_frame, image=reset_image, command=reset_entrys, font=stat_font, borderwidth=0)
+reset_button = tk.Button(button_frame, image=reset_image, command=reset, font=stat_font, borderwidth=0)
 reset_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=20, pady=3)
 go_button.pack(side=tk.LEFT, anchor='center', fill=tk.NONE, expand=tk.NO, padx=20, pady=3)
 
@@ -155,7 +161,7 @@ label_column_two.pack(side=tk.LEFT)
 entry_column_two.pack(side=tk.LEFT)
 
 master.bind('<Return>', lambda event: submit_variables())
-master.bind('<F5>', lambda event: reset_entrys())
+master.bind('<F5>', lambda event: reset())
 
 master.update()
 
