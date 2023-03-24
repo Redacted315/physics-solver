@@ -38,7 +38,7 @@ class Physics:
             for required_list in self.requirementDict[key]:
                 reqs = len(required_list)
                 reqs_met = 0
-                if self.variableDict[key] is None:
+                if self.variableDict[key] is None or self.variableDict[key] is False:
                     for variable in required_list:
                         if self.variableDict[variable] is None:
                             pass
