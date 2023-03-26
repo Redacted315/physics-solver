@@ -26,7 +26,7 @@ class Physics:
     def given(self, **known):
         self.known = known
         for i in self.known:
-            if self.known[i] == '':
+            if self.known[i] == 0:
                 self.known[i] = None
         for variable in self.variableDict:
             if variable in list(known.keys()):
@@ -38,9 +38,9 @@ class Physics:
             for required_list in self.requirementDict[key]:
                 reqs = len(required_list)
                 reqs_met = 0
-                if self.variableDict[key] is None or self.variableDict[key] is False:
+                if self.variableDict[key] is None or self.variableDict[key] is False or self.variableDict[key] == 0:
                     for variable in required_list:
-                        if self.variableDict[variable] is None:
+                        if self.variableDict[variable] is None or self.variableDict[variable] == 0:
                             pass
                         else:
                             reqs_met += 1
